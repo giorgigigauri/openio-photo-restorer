@@ -10,7 +10,7 @@ class MyDocument extends Document {
             name="description"
             content="Restore your old face photos and keep the memories alive."
           />
-          <meta property="og:site_name" content="restorePhotos.io" />
+          <meta property="og:site_name" content="getopenio.com" />
           <meta
             property="og:description"
             content="Restore your old face photos and keep the memories alive."
