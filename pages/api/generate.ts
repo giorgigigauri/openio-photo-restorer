@@ -5,7 +5,11 @@ import redis from "../../utils/redis";
 import {autoId} from "@google-cloud/firestore/build/src/util";
 import {saveRestored} from '../../utils/firebase-admin'
 
-type Data = string;
+type Data = {
+  uuid?: string,
+  restoredImage?: string,
+  message?: string 
+};
 interface ExtendedNextApiRequest extends NextApiRequest {
   body: {
     imageUrl: string;
@@ -34,9 +38,9 @@ export default async function handler(
     if (!result.success) {
       res
         .status(429)
-        .json(
-          "Too many uploads in 1 minute. Please try again in a few minutes."
-        );
+        .json({
+          message: "Too many uploads in 1 minute. Please try again in a few minutes."
+        });
       return;
     }
   }
@@ -82,15 +86,25 @@ export default async function handler(
     }
   }
   if(restoredImage) {
+    let uuid = autoId()
     saveRestored(
       {
-        uuid: autoId(),
+        uuid: uuid,
         image: imageUrl,
         restored: restoredImage
       }
     );
+    res
+      .status(200)
+      .json({
+        uuid: uuid,
+        restoredImage: restoredImage
+      });
+  } else {
+    res
+      .status(503)
+      .json({
+        message: "Failed to restore image"
+      });
   }
-  res
-    .status(200)
-    .json(restoredImage ? restoredImage : "Failed to restore image");
 }

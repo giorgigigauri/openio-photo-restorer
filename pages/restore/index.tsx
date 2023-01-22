@@ -30,34 +30,12 @@ const options = {
   styles: { colors: { primary: "#000" } },
 };
 
-export async function getStaticPaths() {
-  return {
-    paths: [],
-    fallback: "blocking",
-  }
-}
-
-export async function getStaticProps({params}: GetStaticPropsContext<{ slug: string }>) {
-  let item = null;
-  if(params?.slug) {
-    let promice = getRestored(params.slug)
-    item = await promice
-    console.log('cccuuuurrrrr');
-    console.log(item);
-  }
-  return {
-    props: {
-      item,
-    },
-  }
-}
-
-const Home: NextPage<{item:any}> = (props) => {
+const Home: NextPage = () => {
   const router = useRouter();
-  const [originalPhoto, setOriginalPhoto] = useState<string | null>(props?.item?.image);
-  const [restoredImage, setRestoredImage] = useState<string | null>(props?.item?.restored);
+  const [originalPhoto, setOriginalPhoto] = useState<string | null>(null);
+  const [restoredImage, setRestoredImage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [restoredLoaded, setRestoredLoaded] = useState<boolean>(props?.item?.length);
+  const [restoredLoaded, setRestoredLoaded] = useState<boolean>(false);
   const [sideBySide, setSideBySide] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [photoName, setPhotoName] = useState<string | null>(null);
@@ -89,11 +67,12 @@ const Home: NextPage<{item:any}> = (props) => {
       body: JSON.stringify({ imageUrl: fileUrl }),
     });
 
-    let newPhoto = await res.json();
+    let generateData = await res.json();
     if (res.status !== 200) {
-      setError(newPhoto);
+      setError(generateData.message);
     } else {
-      setRestoredImage(newPhoto);
+        router.push(`/restore/${generateData.uuid}`)
+      //setRestoredImage(generateData);
     }
     setLoading(false);
   }
@@ -197,7 +176,12 @@ const Home: NextPage<{item:any}> = (props) => {
               <div className="flex space-x-2 justify-center">
                 {originalPhoto && !loading && (
                   <button
-                    onClick={() => { router.push("/") }}
+                    onClick={() => {
+                      setOriginalPhoto(null);
+                      setRestoredImage(null);
+                      setRestoredLoaded(false);
+                      setError(null);
+                    }}
                     className="bg-black rounded-full text-white font-medium px-4 py-2 mt-8 hover:bg-black/80 transition"
                   >
                     Upload New Photo

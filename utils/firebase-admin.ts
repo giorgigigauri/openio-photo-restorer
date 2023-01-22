@@ -15,9 +15,9 @@ if ( !firebase.apps.length ) {
 export const saveRestored = async (props: saveRestoredProps) => {
     try {
       let data = firebase.firestore()
-      .collection('admin')
-      .doc('photorestores')
-      .get()
+      .collection('restored_photos')
+      .doc(props.uuid)
+      .set(props)
         console.log("Document written with ID");
     } catch (e) {
         console.error("Error adding document: ", e);
@@ -26,15 +26,16 @@ export const saveRestored = async (props: saveRestoredProps) => {
 
   
 export const getRestored = async (slug: string) => {
+  console.log(slug);
     let data = null
     try {
       data = await firebase.firestore()
-      .collection('admin')
-      .doc('photorestores')
+      .collection('restored_photos')
+      .doc(slug)
       .get().then(result => result.data());
     } catch (e) {
         console.error("Error getting document: ", e);
     }  
-    return data;
+    return data || null;
   };
   
