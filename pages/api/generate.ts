@@ -2,6 +2,8 @@ import { Ratelimit } from "@upstash/ratelimit";
 import type { NextApiRequest, NextApiResponse } from "next";
 import requestIp from "request-ip";
 import redis from "../../utils/redis";
+import {autoId} from "@google-cloud/firestore/build/src/util";
+import {saveRestored} from '../../utils/firebase-admin'
 
 type Data = string;
 interface ExtendedNextApiRequest extends NextApiRequest {
@@ -78,6 +80,15 @@ export default async function handler(
     } else {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
+  }
+  if(restoredImage) {
+    saveRestored(
+      {
+        uuid: autoId(),
+        image: imageUrl,
+        restored: restoredImage
+      }
+    );
   }
   res
     .status(200)

@@ -1,19 +1,21 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { NextPage } from "next";
+import { NextPage, GetStaticPropsContext } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
 import CountUp from "react-countup";
 import { UploadDropzone } from "react-uploader";
 import { Uploader } from "uploader";
-import { CompareSlider } from "../components/CompareSlider";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import LoadingDots from "../components/LoadingDots";
-import ResizablePanel from "../components/ResizablePanel";
-import Toggle from "../components/Toggle";
-import appendNewToName from "../utils/appendNewToName";
-import downloadPhoto from "../utils/downloadPhoto";
+import { CompareSlider } from "../../components/CompareSlider";
+import Footer from "../../components/Footer";
+import Header from "../../components/Header";
+import LoadingDots from "../../components/LoadingDots";
+import ResizablePanel from "../../components/ResizablePanel";
+import Toggle from "../../components/Toggle";
+import appendNewToName from "../../utils/appendNewToName";
+import downloadPhoto from "../../utils/downloadPhoto";
+import { useRouter } from 'next/router'
+import {getRestored } from '../../utils/firebase-admin'
 
 // Configuration for the uploader
 const uploader = Uploader({
@@ -28,7 +30,29 @@ const options = {
   styles: { colors: { primary: "#000" } },
 };
 
-const Home: NextPage = () => {
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: "blocking",
+  }
+}
+
+export async function getStaticProps({params}: GetStaticPropsContext<{ slug: string }>) {
+  let item = null;
+  if(params?.slug) {
+    let promice = getRestored(params.slug)
+    item = await promice
+  }
+  return {
+    props: {
+      item,
+    },
+  }
+}
+
+const Home: NextPage = (props) => {
+  console.log(props)
+
   const [originalPhoto, setOriginalPhoto] = useState<string | null>(null);
   const [restoredImage, setRestoredImage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
