@@ -17,23 +17,6 @@ export default async function handler(
   req: ExtendedNextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  // Rate Limiter Code
-  if (ratelimit) {
-    const identifier = requestIp.getClientIp(req);
-    const result = await ratelimit.limit(identifier!);
-    res.setHeader("X-RateLimit-Limit", result.limit);
-    res.setHeader("X-RateLimit-Remaining", result.remaining);
-
-    if (!result.success) {
-      res
-        .status(429)
-        .json(
-          "Too many uploads in 1 minute. Please try again in a few minutes."
-        );
-      return;
-    }
-  }
-
   const id = req.body.id;
  
   if(id) {

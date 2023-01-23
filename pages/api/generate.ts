@@ -16,7 +16,7 @@ interface ExtendedNextApiRequest extends NextApiRequest {
     imageUrl: string;
   };
 }
-const ratelimit = undefined;
+const ratelimit = false;
 /*
 const ratelimit = redis && false
   ? new Ratelimit({
@@ -29,23 +29,6 @@ export default async function handler(
   req: ExtendedNextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  // Rate Limiter Code
-  if (ratelimit) {
-    const identifier = requestIp.getClientIp(req);
-    const result = await ratelimit.limit(identifier!);
-    res.setHeader("X-RateLimit-Limit", result.limit);
-    res.setHeader("X-RateLimit-Remaining", result.remaining);
-
-    if (!result.success) {
-      res
-        .status(429)
-        .json({
-          message: "Too many uploads in 1 minute. Please try again in a few minutes."
-        });
-      return;
-    }
-  }
-
   const imageUrl = req.body.imageUrl;
   // POST request to Replicate to start the image restoration generation process
   let startResponse = await fetch("https://api.replicate.com/v1/predictions", {
