@@ -11,14 +11,7 @@ interface ExtendedNextApiRequest extends NextApiRequest {
     id: string;
   };
 }
-
-// Create a new ratelimiter, that allows 3 requests per 60 seconds
-const ratelimit = redis
-  ? new Ratelimit({
-      redis: redis,
-      limiter: Ratelimit.fixedWindow(3, "60 s"),
-    })
-  : undefined;
+const ratelimit = undefined;
 
 export default async function handler(
   req: ExtendedNextApiRequest,
