@@ -26,7 +26,6 @@ export const saveRestored = async (props: saveRestoredProps) => {
 
   
 export const getRestored = async (slug: string) => {
-  console.log(slug);
     let data = null
     try {
       data = await firebase.firestore()

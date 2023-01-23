@@ -3,7 +3,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import requestIp from "request-ip";
 import redis from "../../utils/redis";
 import {autoId} from "@google-cloud/firestore/build/src/util";
-import {saveRestored} from '../../utils/firebase-admin'
+import {saveRestored} from '../../services/restorer'
+import crypto from "crypto"
 
 type Data = {
   uuid?: string,
@@ -17,7 +18,7 @@ interface ExtendedNextApiRequest extends NextApiRequest {
 }
 
 // Create a new ratelimiter, that allows 3 requests per 60 seconds
-const ratelimit = redis
+const ratelimit = redis && false
   ? new Ratelimit({
       redis: redis,
       limiter: Ratelimit.fixedWindow(3, "60 s"),
@@ -86,7 +87,7 @@ export default async function handler(
     }
   }
   if(restoredImage) {
-    let uuid = autoId()
+    let uuid = crypto.randomUUID()
     saveRestored(
       {
         uuid: uuid,

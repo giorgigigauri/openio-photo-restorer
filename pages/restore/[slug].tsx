@@ -15,7 +15,7 @@ import Toggle from "../../components/Toggle";
 import appendNewToName from "../../utils/appendNewToName";
 import downloadPhoto from "../../utils/downloadPhoto";
 import { useRouter } from 'next/router'
-import {getRestored } from '../../utils/firebase-admin'
+import { getRestored } from '../../services/restorer'
 
 // Configuration for the uploader
 const uploader = Uploader({
@@ -40,10 +40,7 @@ export async function getStaticPaths() {
 export async function getStaticProps({params}: GetStaticPropsContext<{ slug: string }>) {
   let item = null;
   if(params?.slug) {
-    let promice = getRestored(params.slug)
-    item = await promice
-    console.log('cccuuuurrrrr');
-    console.log(item);
+    item = await getRestored(params.slug)
   }
   return {
     props: {
