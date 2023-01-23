@@ -100,7 +100,7 @@ export function Testimonials() {
                     <a href={testimonial.link} target="_blank" rel="noreferrer">
                       <figure className="relative rounded-2xl bg-white p-6 shadow-xl shadow-slate-900/10">
                         <blockquote className="relative">
-                          <p className="text-lg tracking-tight text-slate-900">
+                          <p className="text-lg tracking-tight text-slate-900 h-36">
                             "{testimonial.content}"
                           </p>
                         </blockquote>
