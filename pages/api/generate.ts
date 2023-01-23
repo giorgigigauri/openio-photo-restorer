@@ -16,15 +16,15 @@ interface ExtendedNextApiRequest extends NextApiRequest {
     imageUrl: string;
   };
 }
-
-// Create a new ratelimiter, that allows 3 requests per 60 seconds
+const ratelimit = undefined;
+/*
 const ratelimit = redis && false
   ? new Ratelimit({
       redis: redis,
       limiter: Ratelimit.fixedWindow(3, "60 s"),
     })
   : undefined;
-
+*/
 export default async function handler(
   req: ExtendedNextApiRequest,
   res: NextApiResponse<Data>
