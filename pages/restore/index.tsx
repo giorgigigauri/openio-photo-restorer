@@ -80,8 +80,6 @@ const Home: NextPage = () => {
   return (
     <div className="flex max-w-6xl mx-auto flex-col items-center justify-center py-2 min-h-screen">
       <Head>
-        <title>Restore Photos</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <Header />
